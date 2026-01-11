@@ -5,6 +5,7 @@ plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
+    alias(libs.plugins.kotlin.serialization)
 }
 
 kotlin {
@@ -12,6 +13,10 @@ kotlin {
     wasmJs {
         browser()
         binaries.executable()
+    }
+    
+    compilerOptions {
+        freeCompilerArgs.add("-opt-in=androidx.compose.ui.ExperimentalComposeUiApi")
     }
     
     sourceSets {
@@ -24,9 +29,17 @@ kotlin {
             implementation(compose.components.uiToolingPreview)
             implementation(libs.androidx.lifecycle.viewmodelCompose)
             implementation(libs.androidx.lifecycle.runtimeCompose)
+            implementation(libs.ktor.client.core)
+            implementation(libs.ktor.client.content.negotiation)
+            implementation(libs.ktor.serialization.kotlinx.json)
+            implementation(libs.kotlinx.serialization.json)
+        }
+        wasmJsMain.dependencies {
+            implementation("io.ktor:ktor-client-js:${libs.versions.ktor.get()}")
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
+            implementation(libs.kotlinx.coroutines.test)
         }
     }
 }
