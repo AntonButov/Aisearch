@@ -15,6 +15,8 @@ kotlin {
         binaries.executable()
     }
     
+    jvm()
+    
     compilerOptions {
         freeCompilerArgs.add("-opt-in=androidx.compose.ui.ExperimentalComposeUiApi")
     }
@@ -36,10 +38,45 @@ kotlin {
         }
         wasmJsMain.dependencies {
             implementation("io.ktor:ktor-client-js:${libs.versions.ktor.get()}")
+            implementation("io.ktor:ktor-client-websockets:${libs.versions.ktor.get()}")
+        }
+        val jvmMain by getting {
+            dependencies {
+                implementation(compose.desktop.currentOs)
+                implementation("io.ktor:ktor-client-cio:${libs.versions.ktor.get()}")
+            }
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
             implementation(libs.kotlinx.coroutines.test)
+            implementation(libs.turbine)
+            implementation(libs.ktor.client.mock)
+        }
+        val jvmTest by getting {
+            dependencies {
+                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-swing:${libs.versions.coroutines.get()}")
+            }
+        }
+    }
+}
+
+compose.desktop {
+    application {
+        mainClass = "com.antonbutov.aisearch.desktop.MainKt"
+        
+        nativeDistributions {
+            targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
+            packageName = "AI Search"
+            packageVersion = "1.0.0"
+            
+            macOS {
+                bundleID = "com.antonbutov.aisearch"
+            }
+            
+            windows {
+                menuGroup = "AI Search"
+                upgradeUuid = "18159995-d967-4cd2-8885-77BFA97CFA9F"
+            }
         }
     }
 }

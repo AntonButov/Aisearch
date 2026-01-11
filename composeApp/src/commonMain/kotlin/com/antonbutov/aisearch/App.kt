@@ -1,7 +1,6 @@
 package com.antonbutov.aisearch
 
 import androidx.compose.runtime.Composable
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.antonbutov.aisearch.data.api.ApiClient
 import com.antonbutov.aisearch.data.api.ApiClientImpl
 import com.antonbutov.aisearch.domain.ChatRepositoryImpl
