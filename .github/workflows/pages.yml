@@ -35,13 +35,19 @@ jobs:
     - name: Build wasmJs production
       run: ./gradlew composeApp:wasmJsBrowserProductionWebpack
     
+    - name: Copy and fix index.html for production
+      run: |
+        cp composeApp/src/webMain/resources/index.html composeApp/build/kotlin-webpack/wasmJs/productionExecutable/index.html
+        # Webpack generates composeApp.js bundle, update index.html to reference it
+        sed -i 's/Aisearch-composeApp\.mjs/composeApp.js/g' composeApp/build/kotlin-webpack/wasmJs/productionExecutable/index.html
+    
     - name: Setup Pages
       uses: actions/configure-pages@v4
     
     - name: Upload artifact
       uses: actions/upload-pages-artifact@v3
       with:
-        path: composeApp/build/dist/wasmJs/productionExecutable
+        path: composeApp/build/kotlin-webpack/wasmJs/productionExecutable
 
   deploy:
     environment:
