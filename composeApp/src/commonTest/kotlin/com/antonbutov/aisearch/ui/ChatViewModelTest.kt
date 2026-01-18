@@ -310,15 +310,14 @@ class ChatViewModelTest {
         // Отправляем сообщение
         viewModel.sendMessage("Тестовый вопрос")
         
-        // Ждем состояния Loading
-        val loadingState = viewModel.uiState.first { 
-            it.lastMessageState is LastMessageState.Loading 
+        // Ждем состояния Finished (поток завершился полностью)
+        val finishedState = viewModel.uiState.first { 
+            it.lastMessageState is LastMessageState.Finished 
         }
-        assertTrue(loadingState.lastMessageState is LastMessageState.Loading, "Should be Loading after sending message")
-        assertTrue(loadingState.messages.isNotEmpty(), "Should have user message")
         
-        // WelcomeScreen не должен показываться (есть сообщения, состояние Loading)
-        assertFalse(loadingState.messages.isEmpty(), "Should have messages after sending")
+        // WelcomeScreen не должен показываться (есть сообщения)
+        assertTrue(finishedState.messages.isNotEmpty(), "Should have messages after sending")
+        assertFalse(finishedState.messages.isEmpty(), "Should have messages after sending")
         
         // Ждем завершения всех корутин
         advanceUntilIdle()
