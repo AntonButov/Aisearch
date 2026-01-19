@@ -66,7 +66,7 @@ compose.desktop {
         
         nativeDistributions {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
-            packageName = "AI Search"
+            packageName = "ИИ поиск"
             packageVersion = "1.0.0"
             
             macOS {
@@ -74,7 +74,7 @@ compose.desktop {
             }
             
             windows {
-                menuGroup = "AI Search"
+                menuGroup = "ИИ поиск"
                 upgradeUuid = "18159995-d967-4cd2-8885-77BFA97CFA9F"
             }
         }

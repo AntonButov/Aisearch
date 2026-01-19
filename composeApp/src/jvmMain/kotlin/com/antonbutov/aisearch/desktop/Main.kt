@@ -7,7 +7,7 @@ import com.antonbutov.aisearch.App
 fun main() = application {
     Window(
         onCloseRequest = ::exitApplication,
-        title = "AI Search - RAG Demo"
+        title = "ИИ поиск"
     ) {
         App()
     }
