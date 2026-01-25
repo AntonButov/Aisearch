@@ -1,20 +1,24 @@
 package com.antonbutov.aisearch.ui
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.antonbutov.aisearch.ui.model.Source
+private const val PDF_URL = "Smart_iphone_13_RU.pdf"
 
 @Composable
 fun WelcomeScreen(
     onExampleQuestionClick: (String) -> Unit
 ) {
+    val uriHandler = LocalUriHandler.current
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -30,6 +34,19 @@ fun WelcomeScreen(
                 fontWeight = FontWeight.Normal
             ),
             modifier = Modifier.padding(bottom = 12.dp)
+        )
+        Text(
+            text = "Скачать руководство Smart iPhone 13 (PDF)",
+            style = TextStyle(
+                fontSize = 18.sp,
+                lineHeight = 27.sp,
+                fontWeight = FontWeight.Normal,
+                textDecoration = TextDecoration.Underline,
+                color = MaterialTheme.colorScheme.primary
+            ),
+            modifier = Modifier
+                .padding(bottom = 12.dp)
+                .clickable { uriHandler.openUri(PDF_URL) }
         )
         
         Text(
