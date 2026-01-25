@@ -40,7 +40,9 @@ jobs:
         cp composeApp/src/webMain/resources/index.html composeApp/build/kotlin-webpack/wasmJs/productionExecutable/index.html
         # Webpack generates composeApp.js bundle, update index.html to reference it
         sed -i 's/Aisearch-composeApp\.mjs/composeApp.js/g' composeApp/build/kotlin-webpack/wasmJs/productionExecutable/index.html
-        cp composeApp/src/webMain/resources/Smart_iphone_13_RU.pdf composeApp/build/kotlin-webpack/wasmJs/productionExecutable/
+        if [ -f composeApp/src/webMain/resources/Smart_iphone_13_RU.pdf ]; then
+          cp composeApp/src/webMain/resources/Smart_iphone_13_RU.pdf composeApp/build/kotlin-webpack/wasmJs/productionExecutable/
+        fi
     
     - name: Setup Pages
       uses: actions/configure-pages@v4
