@@ -59,16 +59,24 @@ fun WelcomeScreen(
             modifier = Modifier.padding(bottom = 32.dp)
         )
         
-        // Пример вопроса
+        // Примеры вопросов
         Button(
             onClick = {
                 onExampleQuestionClick("Какие основные функции и возможности iPhone описаны в этом руководстве и для каких задач они предназначены?")
             },
-            modifier = Modifier,
+            modifier = Modifier.padding(bottom = 12.dp),
         ) {
             Text(
                 "Какие основные функции и возможности iPhone описаны в этом руководстве и для каких задач они предназначены?",
             )
+        }
+        Button(
+            onClick = {
+                onExampleQuestionClick("Как использовать программу «Найти iPhone»?")
+            },
+            modifier = Modifier,
+        ) {
+            Text("Как использовать программу «Найти iPhone»?")
         }
     }
 }
