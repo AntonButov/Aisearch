@@ -64,8 +64,6 @@ fun WelcomeScreen(
             modifier = Modifier.fillMaxWidth()
         ) {
             val buttonModifier = Modifier
-                .widthIn(min = 0.dp, max = 360.dp)
-                .defaultMinSize(minWidth = 0.dp)
                 .padding(horizontal = 6.dp, vertical = 6.dp)
             Button(
                 onClick = {
