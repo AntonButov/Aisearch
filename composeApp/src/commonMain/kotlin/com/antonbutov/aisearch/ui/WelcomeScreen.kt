@@ -60,23 +60,39 @@ fun WelcomeScreen(
         )
         
         // Примеры вопросов
-        Button(
-            onClick = {
-                onExampleQuestionClick("Какие основные функции и возможности iPhone описаны в этом руководстве и для каких задач они предназначены?")
-            },
-            modifier = Modifier.padding(bottom = 12.dp),
+        FlowRow(
+            modifier = Modifier.fillMaxWidth()
         ) {
-            Text(
-                "Какие основные функции и возможности iPhone описаны в этом руководстве и для каких задач они предназначены?",
-            )
-        }
-        Button(
-            onClick = {
-                onExampleQuestionClick("Как использовать программу «Найти iPhone»?")
-            },
-            modifier = Modifier,
-        ) {
-            Text("Как использовать программу «Найти iPhone»?")
+            val buttonModifier = Modifier
+                .widthIn(min = 0.dp, max = 360.dp)
+                .defaultMinSize(minWidth = 0.dp)
+                .padding(horizontal = 6.dp, vertical = 6.dp)
+            Button(
+                onClick = {
+                    onExampleQuestionClick("Какие основные функции и возможности iPhone описаны в этом руководстве и для каких задач они предназначены?")
+                },
+                modifier = buttonModifier
+            ) {
+                Text(
+                    "Какие основные функции и возможности iPhone описаны в этом руководстве и для каких задач они предназначены?",
+                )
+            }
+            Button(
+                onClick = {
+                    onExampleQuestionClick("Как использовать программу «Найти iPhone»?")
+                },
+                modifier = buttonModifier
+            ) {
+                Text("Как использовать программу «Найти iPhone»?")
+            }
+            Button(
+                onClick = {
+                    onExampleQuestionClick("Сделай текстовый план основных разделов (по доступным частям руководства).")
+                },
+                modifier = buttonModifier
+            ) {
+                Text("Сделай текстовый план основных разделов (по доступным частям руководства).")
+            }
         }
     }
 }
