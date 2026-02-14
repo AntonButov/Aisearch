@@ -51,7 +51,7 @@ class ChatViewModel(
 
     fun sendMessage(message: String) {
         if (message.isBlank() || _uiState.value.lastMessageState is LastMessageState.Loading) return
-        
+
         // Если предыдущее состояние было Finished, переводим в Idle перед новым запросом
         if (_uiState.value.lastMessageState is LastMessageState.Finished) {
             _uiState.update { it.copy(lastMessageState = LastMessageState.Idle) }
@@ -68,7 +68,6 @@ class ChatViewModel(
 
             repository.streamChat(message)
                 .catch { cause ->
-                    // Обработка ошибок на уровне потока - переводим в Idle
                     _uiState.update { currentState ->
                         currentState.copy(lastMessageState = LastMessageState.Idle)
                     }
@@ -78,21 +77,10 @@ class ChatViewModel(
                         val chunkText = chunk.textResponse ?: ""
                         when (chunk.type) {
                             ChunkType.FinalizeResponseStream -> {
-                                // FinalizeResponseStream - завершаем сообщение с источниками
-                                // Проверяем, не были ли источники уже добавлены
                                 val currentState = _uiState.value
-                                if (currentState.lastMessageState is LastMessageState.Finished) {
-                                    // Источники уже были добавлены, пропускаем
-                                    return@collect
-                                }
-                                
-                                // Проверяем, не является ли последнее сообщение уже ChatMessageSources
+                                if (currentState.lastMessageState is LastMessageState.Finished) return@collect
                                 val lastMessage = currentState.messages.lastOrNull()
-                                if (lastMessage is ChatMessage.ChatMessageSources) {
-                                    // Источники уже были добавлены, пропускаем
-                                    return@collect
-                                }
-                                
+                                if (lastMessage is ChatMessage.ChatMessageSources) return@collect
                                 val sources = (chunk.sources ?: emptyList()).map { apiSource ->
                                     Source(
                                         title = apiSource.description ?: apiSource.title,
@@ -118,21 +106,15 @@ class ChatViewModel(
 
                             ChunkType.TextResponseChunk -> {
                                 _uiState.update { currentState ->
-                                    val chunkText = chunk.textResponse ?: ""
-                                    // Если это первый TextResponseChunk (состояние Loading), сразу переходим в Message
-                                    // даже если текст пустой - это скроет лоадер немедленно
+                                    val chunkText = normalizeMenuSeparators(chunk.textResponse ?: "")
                                     val previousText = when (currentState.lastMessageState) {
                                         is LastMessageState.Message -> currentState.lastMessageState.text
-                                        else -> "" // Loading или Idle - начинаем с пустой строки
+                                        else -> ""
                                     }
                                     val newText = previousText + chunkText
-                                    
-                                    // Если close: true и есть sources, завершаем сообщение с источниками
                                     if (chunk.close == true && !chunk.sources.isNullOrEmpty()) {
-                                        // Проверяем, не были ли источники уже добавлены
                                         val lastMessage = currentState.messages.lastOrNull()
                                         if (lastMessage is ChatMessage.ChatMessageSources) {
-                                            // Источники уже были добавлены, только обновляем состояние
                                             currentState.copy(
                                                 lastMessageState = LastMessageState.Finished
                                             )
@@ -165,7 +147,6 @@ class ChatViewModel(
                             }
                         }
                     }.onFailure {
-                        // Обработка ошибок - переводим в Idle
                         _uiState.update { currentState ->
                             currentState.copy(lastMessageState = LastMessageState.Idle)
                         }
@@ -177,6 +158,7 @@ class ChatViewModel(
     /**
      * Извлекает текст из поля text источника, удаляя метаданные документа.
      * Ищет закрывающий тег </document_metadata> и возвращает текст после него.
+     * Заменяет символы-стрелки на " > ", чтобы они отображались при любом шрифте.
      */
     private fun extractTextFromSource(sourceText: String): String {
         if (sourceText.isEmpty()) return ""
@@ -184,14 +166,29 @@ class ChatViewModel(
         val metadataEndTag = "</document_metadata>"
         val metadataEndIndex = sourceText.indexOf(metadataEndTag)
         
-        return if (metadataEndIndex >= 0) {
-            // Берем текст после закрывающего тега и убираем начальные пробелы/переносы строк
+        val raw = if (metadataEndIndex >= 0) {
             sourceText.substring(metadataEndIndex + metadataEndTag.length)
                 .trimStart()
-                .replace(Regex("^[\n\r]+"), "") // Убираем начальные переносы строк
+                .replace(Regex("^[\n\r]+"), "")
         } else {
-            // Если тега нет, возвращаем исходный текст
             sourceText.trim()
         }
+        return normalizeMenuSeparators(raw)
+    }
+
+    /** Заменяет стрелки и подобные разделители путей меню на " > " для корректного отображения без спецсимволов. */
+    private fun normalizeMenuSeparators(text: String): String {
+        if (text.isEmpty()) return text
+        return text
+            .replace('\u2192', '>')  // →
+            .replace('\u203A', '>')  // ›
+            .replace('\u27A1', '>')  // ➡
+            .replace('\u279C', '>')  // ➜
+            .replace('\u279D', '>')  // ➝
+            .replace('\u27F6', '>')  // ⟶
+            .replace('\u25B6', '>')  // ▶
+            .replace('\u25B8', '>')  // ▸
+            .replace('\uFE65', '>')  // ﹥
+            .replace(Regex("\\s*>\\s*"), " > ")  // нормализуем пробелы вокруг >
     }
 }
