@@ -12,17 +12,11 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun ChatScreen(viewModel: ChatViewModel) {
-    var uiState by remember { mutableStateOf(viewModel.uiState.value) }
+    val uiState by viewModel.uiState.collectAsState()
     var messageText by remember { mutableStateOf("") }
     var showSourcesDialog by remember { mutableStateOf(false) }
     var sourcesToShow by remember { mutableStateOf<List<com.antonbutov.aisearch.ui.model.Source>>(emptyList()) }
     val listState = rememberLazyListState()
-    
-    LaunchedEffect(Unit) {
-        viewModel.uiState.collect { newState ->
-            uiState = newState
-        }
-    }
     
     LaunchedEffect(uiState.messages.size, uiState.lastMessageState) {
         val totalItems = uiState.messages.size + if (uiState.lastMessageState is LastMessageState.Message || uiState.lastMessageState is LastMessageState.Loading) 1 else 0

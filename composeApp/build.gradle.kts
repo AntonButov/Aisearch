@@ -8,6 +8,7 @@ plugins {
     alias(libs.plugins.kotlin.serialization)
 }
 
+
 kotlin {
     @OptIn(ExperimentalWasmDsl::class)
     wasmJs {
