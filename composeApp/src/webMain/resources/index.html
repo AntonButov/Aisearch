@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>ИИ поиск</title>
     <link rel="icon" type="image/svg+xml" href="favicon.svg">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -24,7 +24,12 @@
         }
         #ComposeTarget {
             width: 100vw;
+            /* 100dvh = dynamic viewport height (excludes browser UI); 100vh fallback for older browsers */
             height: 100vh;
+            height: 100dvh;
+            min-height: 100vh;
+            min-height: 100dvh;
+            padding-bottom: env(safe-area-inset-bottom, 0px);
             user-select: text;
             -webkit-user-select: text;
             -moz-user-select: text;
@@ -63,6 +68,30 @@
                 }
                 originalError.apply(console, args);
             };
+        })();
+
+        // Sync container height with visualViewport (address bar, keyboard) for mobile browsers
+        (function() {
+            function updateViewportHeight() {
+                const vv = window.visualViewport;
+                const container = document.getElementById('ComposeTarget');
+                if (vv && container) {
+                    container.style.height = vv.height + 'px';
+                    container.style.minHeight = vv.height + 'px';
+                }
+            }
+            function init() {
+                if (window.visualViewport) {
+                    window.visualViewport.addEventListener('resize', updateViewportHeight);
+                    window.visualViewport.addEventListener('scroll', updateViewportHeight);
+                    updateViewportHeight();
+                }
+            }
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', init);
+            } else {
+                init();
+            }
         })();
     </script>
 </head>
