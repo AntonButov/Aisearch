@@ -18,7 +18,9 @@ fun AppTheme(
     
     val colorScheme = baseColorScheme.copy(
         surface = Color(0xFFF5F5F5), // Серый цвет
-        surfaceVariant = Color(0xFFE0E0E0) // Светло-серый для вариантов
+        surfaceVariant = Color(0xFFE0E0E0), // Светло-серый для вариантов
+        primary = if (darkTheme) Color(0xFF42A5F5) else Color(0xFF1976D2),
+        onPrimary = Color.White
     )
     
     MaterialTheme(

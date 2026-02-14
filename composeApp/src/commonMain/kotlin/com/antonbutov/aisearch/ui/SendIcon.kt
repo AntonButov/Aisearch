@@ -17,7 +17,7 @@ val SendIcon: ImageVector = ImageVector.Builder(
     // Упрощенная версия стрелки навигации
     // Основной контур стрелки (аппроксимация)
     path(
-        fill = SolidColor(Color(0xFF3B6A75))
+        fill = SolidColor(Color.Black)
     ) {
         // Основная форма стрелки
         moveTo(85.4f, 3.4f)
@@ -31,7 +31,7 @@ val SendIcon: ImageVector = ImageVector.Builder(
     }
     // Внутренние детали
     path(
-        fill = SolidColor(Color(0xFF2A4F58))
+        fill = SolidColor(Color.Black)
     ) {
         moveTo(28.8f, 34.3f)
         lineTo(18.1f, 31.6f)
